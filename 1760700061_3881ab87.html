@@ -1,0 +1,435 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>研发效能分析报告（2025-09）</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; margin: 40px; background: #f9f9f9; }
+        h1, h2 { color: #2c3e50; }
+        .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .metric-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); text-align: center; }
+        .metric-card.blue { background-color: #e8f5e9; }
+        .metric-card.green { background-color: #fffde7; }
+        .metric-card.orange { background-color: #ffebee; }
+        .metric-card.purple { background-color: #ede7f6; }
+        canvas { margin-top: 20px; }
+        .chart-title { margin-top: 10px; font-size: 16px; font-weight: bold; }
+        .anomaly-note { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h1>研发效能分析报告（2025-09）</h1>
+
+<!-- 一、总体效能概览 -->
+<h2>一、总体效能概览</h2>
+<div class="grid-container">
+    <div class="metric-card blue">
+        <div>总迭代数</div>
+        <div><strong>17</strong></div>
+        <div>本月完成的迭代总数</div>
+    </div>
+    <div class="metric-card green">
+        <div>当月产生 Bug 数</div>
+        <div><strong>400</strong></div>
+        <div>包含已关闭与待修复</div>
+    </div>
+    <div class="metric-card orange">
+        <div>平均缺陷率</div>
+        <div><strong>1.0%</strong></div>
+        <div>所有部门平均值</div>
+    </div>
+    <div class="metric-card purple">
+        <div>测试用例执行率</div>
+        <div><strong>92.6%</strong></div>
+        <div>自动化+手动覆盖</div>
+    </div>
+    <div class="metric-card blue">
+        <div>总提交数</div>
+        <div><strong>3,584</strong></div>
+        <div>GitLab 提交数量</div>
+    </div>
+    <div class="metric-card green">
+        <div>总变更行数</div>
+        <div><strong>1,038,203</strong></div>
+        <div>新增+删除行</div>
+    </div>
+    <div class="metric-card orange">
+        <div>人均变更量</div>
+        <div><strong>33,490.4</strong></div>
+        <div>变更行数÷开发人数</div>
+    </div>
+    <div class="metric-card purple">
+        <div>人均工时</div>
+        <div><strong>99.3h</strong></div>
+        <div>团队平均投入</div>
+    </div>
+</div>
+
+<!-- 二、开发效率分析 -->
+<h2>二、开发效率分析</h2>
+
+<!-- 图表：个人工时投入比分析 -->
+<canvas id="effortRatioChart" width="800" height="930"></canvas>
+<div class="chart-title">图：个人工时投入比分析</div>
+<div class="anomaly-note">
+    异常点说明：陈亮（1425.0%），远高于平均值（113.0%），可能因任务分配失衡，建议重新评估工时分配。<br>
+    异常点说明：凌亮正（512.5%），远高于平均值（113.0%），可能因承担高复杂度任务，建议优化任务分解。
+</div>
+
+<script>
+    const effortRatioData = [
+        { name: "陈亮", ratio: 1425.0 }, { name: "凌亮正", ratio: 512.5 }, { name: "宁波", ratio: 228.8 },
+        { name: "陈彬", ratio: 228.0 }, { name: "张梦娟", ratio: 333.3 }, { name: "周宇希", ratio: 173.5 },
+        { name: "夏佳兴", ratio: 139.0 }, { name: "包鹏飞", ratio: 140.7 }, { name: "李楠", ratio: 145.5 },
+        { name: "朱叶贤", ratio: 168.8 }, { name: "曾志翔", ratio: 183.3 }, { name: "黄永富", ratio: 123.9 },
+        { name: "龚俊", ratio: 101.8 }, { name: "林群", ratio: 125.0 }, { name: "陈楷枫", ratio: 120.2 },
+        { name: "易锋华", ratio: 101.6 }, { name: "缪捷丞", ratio: 97.5 }, { name: "詹婉晶", ratio: 95.1 },
+        { name: "邹文杰", ratio: 121.9 }, { name: "钟义勇", ratio: 120.0 }, { name: "黄金潮", ratio: 107.3 },
+        { name: "杨惠影", ratio: 88.3 }, { name: "陈跃", ratio: 87.8 }, { name: "陆雯艳", ratio: 74.0 },
+        { name: "吴一凡", ratio: 54.9 }, { name: "刘冰", ratio: 96.1 }, { name: "庞林", ratio: 100.0 },
+        { name: "樊韬", ratio: 98.7 }, { name: "洪伟强", ratio: 88.9 }
+    ].sort((a, b) => b.ratio - a.ratio);
+
+    const effortRatioCtx = document.getElementById('effortRatioChart').getContext('2d');
+    new Chart(effortRatioCtx, {
+        type: 'bar',
+        data: {
+            labels: effortRatioData.map(d => d.name),
+            datasets: [{
+                label: '投入比 (%)',
+                data: effortRatioData.map(d => d.ratio),
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: true,
+            scales: {
+                x: { ticks: { font: { size: 10 } } },
+                y: { max: Math.ceil(Math.max(...effortRatioData.map(d => d.ratio)) * 1.1) }
+            },
+            plugins: { legend: { display: false }, tooltip: { enabled: true } }
+        }
+    });
+</script>
+
+<!-- 图表：代码产出分布 -->
+<canvas id="codeOutputChart" width="400" height="400"></canvas>
+<div class="chart-title">图：代码产出分布</div>
+<script>
+    const codeOutputData = [
+        { name: "凌亮正", lines: 129790 }, { name: "詹婉晶", lines: 115278 }, { name: "张梦娟", lines: 95796 },
+        { name: "陈楷枫", lines: 49332 }, { name: "黄金潮", lines: 43671 }, { name: "陈亮", lines: 44325 },
+        { name: "陈彬", lines: 26953 }, { name: "朱叶贤", lines: 29649 }, { name: "夏佳兴", lines: 25816 },
+        { name: "李楠", lines: 5961 }, { name: "邹文杰", lines: 8042 }, { name: "缪捷丞", lines: 10241 },
+        { name: "周宇希", lines: 34963 }, { name: "包鹏飞", lines: 9168 }, { name: "宁波", lines: 707 },
+        { name: "吴一凡", lines: 2468 }, { name: "黄永富", lines: 21248 }, { name: "林群", lines: 9624 },
+        { name: "钟义勇", lines: 141 }, { name: "樊韬", lines: 2829 }, { name: "洪伟强", lines: 1501 }
+    ].sort((a, b) => b.lines - a.lines);
+
+    const codeOutputCtx = document.getElementById('codeOutputChart').getContext('2d');
+    new Chart(codeOutputCtx, {
+        type: 'pie',
+        data: {
+            labels: codeOutputData.map(d => d.name),
+            datasets: [{
+                data: codeOutputData.map(d => d.lines),
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#FFCD56', '#8B0000', '#008000']
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: true,
+            plugins: { legend: { position: 'right' } }
+        }
+    });
+</script>
+
+<!-- 图表：工时投入比的正态分布分析 -->
+<canvas id="normalDistributionChart" width="800" height="400"></canvas>
+<div class="chart-title">图：工时投入比的正态分布分析</div>
+<div class="anomaly-note">
+    异常点说明：陈亮（1425.0%），远高于均值（113.0%），可能因任务分配失衡，建议重新评估工时分配。<br>
+    异常点说明：凌亮正（512.5%），远高于均值（113.0%），可能因承担高复杂度任务，建议优化任务分解。
+</div>
+<script>
+    const normalData = effortRatioData.map(d => d.ratio);
+    const mean = normalData.reduce((a, b) => a + b, 0) / normalData.length;
+    const stdDev = Math.sqrt(normalData.map(x => (x - mean) ** 2).reduce((a, b) => a + b, 0) / normalData.length);
+
+    const normalCtx = document.getElementById('normalDistributionChart').getContext('2d');
+    new Chart(normalCtx, {
+        type: 'line',
+        data: {
+            labels: Array.from({ length: 20 }, (_, i) => (mean - 3 * stdDev + i * (6 * stdDev / 20)).toFixed(2)),
+            datasets: [
+                {
+                    label: '理论正态分布',
+                    data: Array.from({ length: 20 }, (_, i) => {
+                        const x = mean - 3 * stdDev + i * (6 * stdDev / 20);
+                        return (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * ((x - mean) / stdDev) ** 2);
+                    }),
+                    borderColor: 'blue',
+                    borderWidth: 2,
+                    fill: false
+                },
+                {
+                    label: '实际数据',
+                    data: normalData.map(x => (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * ((x - mean) / stdDev) ** 2)),
+                    borderColor: 'red',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: normalData.map(x => Math.abs((x - mean) / stdDev) > 2 ? 'red' : 'green')
+                }
+            ]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: true,
+            scales: {
+                x: { title: { display: true, text: '投入比 (%)' } },
+                y: { title: { display: true, text: '概率密度' } }
+            }
+        }
+    });
+</script>
+
+<!-- 三、质量与缺陷分析 -->
+<h2>三、质量与缺陷分析</h2>
+
+<!-- 图表：缺陷分布与修复情况 -->
+<canvas id="bugAnalysisChart" width="800" height="930"></canvas>
+<div class="chart-title">图：缺陷分布与修复情况</div>
+<div class="anomaly-note">
+    异常点说明：包鹏飞（缺陷率0.8%），远高于平均值（0.0%），需加强代码审查和测试覆盖。
+</div>
+<script>
+    const bugData = [
+        { name: "包鹏飞", produced: 71, fixed: 37 }, { name: "周宇希", produced: 50, fixed: 55 },
+        { name: "陈楷枫", produced: 43, fixed: 42 }, { name: "陈亮", produced: 36, fixed: 31 },
+        { name: "张梦娟", produced: 30, fixed: 28 }, { name: "李楠", produced: 23, fixed: 49 },
+        { name: "吴一凡", produced: 22, fixed: 27 }, { name: "朱叶贤", produced: 21, fixed: 32 },
+        { name: "詹婉晶", produced: 18, fixed: 17 }, { name: "庞林", produced: 16, fixed: 21 },
+        { name: "缪捷丞", produced: 15, fixed: 16 }, { name: "陈彬", produced: 12, fixed: 15 },
+        { name: "曾志翔", produced: 12, fixed: 21 }, { name: "黄金潮", produced: 10, fixed: 14 },
+        { name: "宁波", produced: 8, fixed: 9 }, { name: "易锋华", produced: 6, fixed: null },
+        { name: "凌亮正", produced: 5, fixed: 6 }, { name: "刘冰", produced: 5, fixed: 6 },
+        { name: "邹文杰", produced: 3, fixed: 3 }, { name: "夏佳兴", produced: 3, fixed: 5 },
+        { name: "杨惠影", produced: 1, fixed: 1 }, { name: "原杨帆", produced: 1, fixed: null },
+        { name: "陈莉莉", produced: 1, fixed: 1 }, { name: "钟义勇", produced: 1, fixed: 1 },
+        { name: "许文通", produced: null, fixed: 1 }, { name: "林群", produced: null, fixed: 3 },
+        { name: "黄嵩", produced: null, fixed: null }, { name: "洪伟强", produced: null, fixed: null },
+        { name: "樊韬", produced: null, fixed: null }, { name: "Administrator", produced: null, fixed: null }
+    ].sort((a, b) => (b.produced || 0) - (a.produced || 0));
+
+    const bugCtx = document.getElementById('bugAnalysisChart').getContext('2d');
+    new Chart(bugCtx, {
+        type: 'bar',
+        data: {
+            labels: bugData.map(d => d.name),
+            datasets: [
+                { label: '产生Bug数', data: bugData.map(d => d.produced || 0), backgroundColor: 'rgba(255, 99, 132, 0.6)' },
+                { label: '修复Bug数', data: bugData.map(d => d.fixed || 0), backgroundColor: 'rgba(54, 162, 235, 0.6)' }
+            ]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: true,
+            scales: {
+                x: { ticks: { font: { size: 10 } } },
+                y: { max: Math.ceil(Math.max(...bugData.map(d => Math.max(d.produced || 0, d.fixed || 0))) * 1.1) }
+            }
+        }
+    });
+</script>
+
+<!-- 图表：缺陷修复率分析 -->
+<canvas id="fixRateChart" width="800" height="930"></canvas>
+<div class="chart-title">图：缺陷修复率分析</div>
+<div class="anomaly-note">
+    异常点说明：詹婉晶（修复及时率17.6%），远低于平均值（78.8%），需加强修复时效管理。
+</div>
+<script>
+    const fixRateData = [
+        { name: "周宇希", rate: 98.2 }, { name: "包鹏飞", rate: 97.3 }, { name: "陈彬", rate: 100.0 },
+        { name: "庞林", rate: 85.7 }, { name: "张梦娟", rate: 85.7 }, { name: "朱叶贤", rate: 78.1 },
+        { name: "李楠", rate: 53.1 }, { name: "吴一凡", rate: 88.9 }, { name: "曾志翔", rate: 71.4 },
+        { name: "黄金潮", rate: 92.9 }, { name: "宁波", rate: 100.0 }, { name: "凌亮正", rate: 100.0 },
+        { name: "刘冰", rate: 100.0 }, { name: "邹文杰", rate: 100.0 }, { name: "夏佳兴", rate: 80.0 },
+        { name: "杨惠影", rate: 100.0 }, { name: "陈莉莉", rate: 100.0 }, { name: "钟义勇", rate: 100.0 },
+        { name: "许文通", rate: 100.0 }, { name: "詹婉晶", rate: 17.6 }
+    ].sort((a, b) => b.rate - a.rate);
+
+    const fixRateCtx = document.getElementById('fixRateChart').getContext('2d');
+    new Chart(fixRateCtx, {
+        type: 'bar',
+        data: {
+            labels: fixRateData.map(d => d.name),
+            datasets: [{
+                label: '修复及时率 (%)',
+                data: fixRateData.map(d => d.rate),
+                backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: true,
+            scales: {
+                x: { ticks: { font: { size: 10 } } },
+                y: { max: Math.ceil(Math.max(...fixRateData.map(d => d.rate)) * 1.1) }
+            },
+            plugins: { legend: { display: false }, tooltip: { enabled: true } }
+        }
+    });
+</script>
+
+<!-- 图表：测试覆盖情况 -->
+<canvas id="testCoverageChart" width="400" height="400"></canvas>
+<div class="chart-title">图：测试覆盖情况</div>
+<script>
+    const testCoverageCtx = document.getElementById('testCoverageChart').getContext('2d');
+    new Chart(testCoverageCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['已执行', '未执行'],
+            datasets: [{
+                data: [92.6, 7.4],
+                backgroundColor: ['#36A2EB', '#FF6384']
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: true,
+            plugins: { legend: { position: 'right' } }
+        }
+    });
+</script>
+
+<!-- 四、团队效能对比 -->
+<h2>四、团队效能对比</h2>
+
+<!-- 图表：团队效能对比 -->
+<canvas id="teamPerformanceChart" width="800" height="400"></canvas>
+<div class="chart-title">图：团队效能对比</div>
+<div>
+    研发一部Bug率为0.6%，研发二部为1.2%，表明模块复杂度是主要影响因素，而非开发活跃度。
+</div>
+<script>
+    const teamPerformanceData = [
+        { department: "研发一部", bugRate: 0.6, commitsPerPerson: 108.5 },
+        { department: "研发二部", bugRate: 1.2, commitsPerPerson: 110.1 }
+    ];
+
+    const teamPerformanceCtx = document.getElementById('teamPerformanceChart').getContext('2d');
+    new Chart(teamPerformanceCtx, {
+        type: 'line',
+        data: {
+            labels: teamPerformanceData.map(d => d.department),
+            datasets: [
+                {
+                    label: '平均 Bug 率 (%)',
+                    data: teamPerformanceData.map(d => d.bugRate),
+                    yAxisID: 'y1',
+                    borderColor: 'blue',
+                    borderWidth: 2,
+                    pointStyle: 'circle'
+                },
+                {
+                    label: '人均提交数',
+                    data: teamPerformanceData.map(d => d.commitsPerPerson),
+                    yAxisID: 'y2',
+                    borderColor: 'orange',
+                    borderWidth: 2,
+                    pointStyle: 'triangle'
+                }
+            ]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: true,
+            scales: {
+                y1: { type: 'linear', position: 'left', title: { display: true, text: '平均 Bug 率 (%)' }, beginAtZero: true },
+                y2: { type: 'linear', position: 'right', title: { display: true, text: '人均提交数' }, beginAtZero: true }
+            }
+        }
+    });
+</script>
+
+<!-- 图表：部门开发投入与产出对比 -->
+<canvas id="departmentEfficiencyChart" width="800" height="400"></canvas>
+<div class="chart-title">图：部门开发投入与产出对比</div>
+<div>
+    研发二部的人均工时略高于研发一部，但其人均变更行较低，表明可能存在效率优化空间。
+</div>
+<script>
+    const departmentEfficiencyData = [
+        { department: "研发一部", hoursPerPerson: 83.2, linesPerPerson: 34630.2 },
+        { department: "研发二部", hoursPerPerson: 84.5, linesPerPerson: 32353.5 }
+    ];
+
+    const departmentEfficiencyCtx = document.getElementById('departmentEfficiencyChart').getContext('2d');
+    new Chart(departmentEfficiencyCtx, {
+        type: 'line',
+        data: {
+            labels: departmentEfficiencyData.map(d => d.department),
+            datasets: [
+                {
+                    label: '人均工时 (h)',
+                    data: departmentEfficiencyData.map(d => d.hoursPerPerson),
+                    yAxisID: 'y1',
+                    borderColor: 'green',
+                    borderWidth: 2,
+                    pointStyle: 'rect'
+                },
+                {
+                    label: '人均变更行',
+                    data: departmentEfficiencyData.map(d => d.linesPerPerson),
+                    yAxisID: 'y2',
+                    borderColor: 'red',
+                    borderWidth: 2,
+                    pointStyle: 'diamond'
+                }
+            ]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: true,
+            scales: {
+                y1: { type: 'linear', position: 'left', title: { display: true, text: '人均工时 (h)' }, beginAtZero: true },
+                y2: { type: 'linear', position: 'right', title: { display: true, text: '人均变更行' }, beginAtZero: true }
+            }
+        }
+    });
+</script>
+
+<!-- 五、总结与建议 -->
+<h2>五、总结与建议</h2>
+<ul>
+    <li><strong>核心结论：</strong>
+        <ul>
+            <li>高工时投入比人员（如陈亮、凌亮正）多承担复杂任务，但需注意任务分配均衡。</li>
+            <li>高变更行人员（如凌亮正、詹婉晶）缺陷率低，体现规模效应与成熟度。</li>
+            <li>测试覆盖率为92.6%，有效降低缺陷率，但自动化比例缺失需改进。</li>
+            <li>研发二部Bug率较高，表明模块复杂度是主要影响因素。</li>
+        </ul>
+    </li>
+    <li><strong>改进建议：</strong>
+        <ul>
+            <li>针对高工时投入比人员，优化任务分解，避免过度集中。</li>
+            <li>强化对高缺陷率模块（如宁波、包鹏飞负责部分）的代码审查和测试覆盖。</li>
+            <li>引入自动化测试工具，提升回归效率，减少人工测试负担。</li>
+            <li>优化研发二部的任务分配，降低复杂模块对整体质量的影响。</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>
+```
