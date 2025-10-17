@@ -1,0 +1,404 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>月度研发分析报告（2025-09）</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; margin: 40px; background-color: #f9f9f9; }
+        h1, h2 { color: #2c3e50; }
+        .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
+        .metric-card { border: 1px solid #ddd; padding: 15px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 8px; }
+        .metric-card:nth-child(1) { background-color: #ff9f9f; }
+        .metric-card:nth-child(2) { background-color: #9fff9f; }
+        .metric-card:nth-child(3) { background-color: #9fbfff; }
+        .metric-card:nth-child(4) { background-color: #f9ff9f; }
+        canvas { margin-bottom: 20px; }
+        .chart-title { font-weight: bold; margin-top: 10px; }
+        .abnormal-points { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h1>月度研发分析报告（2025-09）</h1>
+
+<div class="section">
+    <h2>一、总体效能概览</h2>
+    <div class="grid-container">
+        <div class="metric-card">
+            <div>总迭代数</div>
+            <div><strong>17</strong></div>
+            <div>本月完成的迭代总数</div>
+        </div>
+        <div class="metric-card">
+            <div>当月产生 Bug 数</div>
+            <div><strong>398</strong></div>
+            <div>包含已关闭与待修复</div>
+        </div>
+        <div class="metric-card">
+            <div>平均缺陷率</div>
+            <div><strong>1.0%</strong></div>
+            <div>所有部门平均值</div>
+        </div>
+        <div class="metric-card">
+            <div>测试用例执行率</div>
+            <div><strong>92.6%</strong></div>
+            <div>自动化+手动覆盖</div>
+        </div>
+        <div class="metric-card">
+            <div>总提交数</div>
+            <div><strong>4,583</strong></div>
+            <div>GitLab 提交数量</div>
+        </div>
+        <div class="metric-card">
+            <div>总变更行数</div>
+            <div><strong>1,032,877</strong></div>
+            <div>新增+删除行</div>
+        </div>
+        <div class="metric-card">
+            <div>人均变更量</div>
+            <div><strong>35,616.4</strong></div>
+            <div>变更行数÷开发人数</div>
+        </div>
+        <div class="metric-card">
+            <div>人均工时</div>
+            <div><strong>89.9h</strong></div>
+            <div>团队平均投入</div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>二、开发效率分析</h2>
+
+    <!-- 工时投入比分析 -->
+    <canvas id="effort-ratio-chart" width="800" height="930"></canvas>
+    <div class="chart-title">图：个人工时投入比分析</div>
+    <div class="abnormal-points">
+        异常点说明：陈亮（1,425.0%），远高于平均值（129.8%），可能因任务分配失衡，建议重新评估工时分配。<br>
+        异常点说明：张梦娟（333.3%），远高于平均值（129.8%），可能因任务复杂度过高，建议分解任务。<br>
+        异常点说明：宁波（228.8%），远高于平均值（129.8%），可能因任务紧急程度高，建议优化任务优先级。
+    </div>
+
+    <!-- 代码产出分布 -->
+    <canvas id="code-output-chart" width="400" height="400"></canvas>
+    <div class="chart-title">图：代码产出分布</div>
+
+    <!-- 工时投入比正态分布分析 -->
+    <canvas id="normal-distribution-chart" width="800" height="400"></canvas>
+    <div class="chart-title">图：工时投入比的正态分布分析</div>
+    <div class="abnormal-points">
+        异常点说明：陈亮（1,425.0%），远高于均值±2σ范围，可能因任务分配不合理，建议重新规划任务。<br>
+        异常点说明：张梦娟（333.3%），远高于均值±2σ范围，可能因任务复杂度过高，建议优化任务分解。<br>
+        异常点说明：宁波（228.8%），远高于均值±2σ范围，可能因任务紧急程度高，建议调整任务优先级。
+    </div>
+</div>
+
+<div class="section">
+    <h2>三、质量与缺陷分析</h2>
+
+    <!-- 缺陷分布与修复情况 -->
+    <canvas id="bug-distribution-chart" width="800" height="930"></canvas>
+    <div class="chart-title">图：缺陷分布与修复情况</div>
+
+    <!-- 缺陷修复率分析 -->
+    <canvas id="bug-fix-rate-chart" width="800" height="930"></canvas>
+    <div class="chart-title">图：缺陷修复率分析</div>
+    <div class="abnormal-points">
+        异常点说明：詹婉晶（17.6%），远低于平均值（74.0%），可能因修复资源不足，建议增加支持。<br>
+        异常点说明：陈楷枫（38.1%），远低于平均值（74.0%），可能因修复工具或方法不当，建议改进流程。
+    </div>
+
+    <!-- 测试覆盖情况 -->
+    <canvas id="test-coverage-chart" width="400" height="400"></canvas>
+    <div class="chart-title">图：测试覆盖情况</div>
+</div>
+
+<div class="section">
+    <h2>四、团队效能对比</h2>
+
+    <!-- 团队效能对比 -->
+    <canvas id="team-performance-chart" width="800" height="400"></canvas>
+    <div class="chart-title">图：团队效能对比</div>
+
+    <!-- 部门开发投入与产出对比 -->
+    <canvas id="team-efficiency-chart" width="800" height="400"></canvas>
+    <div class="chart-title">图：部门开发投入与产出对比</div>
+</div>
+
+<div class="section">
+    <h2>五、总结与建议</h2>
+    <p><strong>核心结论：</strong></p>
+    <ul>
+        <li>团队整体工时超支15.6%，反映出计划外任务或效率问题。</li>
+        <li>缺陷率1.0%处于可控范围，但部分人员如宁波、包鹏飞的模块缺陷率较高，需重点改进。</li>
+        <li>测试执行率92.6%有效保障了质量基线，但自动化比例缺失，建议引入自动化覆盖率指标。</li>
+        <li>研发二部Bug率（1.2%）是研发一部（0.6%）的两倍，与其提交密度和模块复杂度直接相关。</li>
+    </ul>
+    <p><strong>改进建议：</strong></p>
+    <ul>
+        <li>针对高投入比异常点（如陈亮、张梦娟），重新评估任务分配和复杂度。</li>
+        <li>对高缺陷率模块（如宁波的H5/shuzhi），补充专项测试并优化代码质量。</li>
+        <li>提升自动化测试比例，特别是在高风险模块中优先实施。</li>
+        <li>平衡研发二部的提交密度与模块复杂度，减少Bug率。</li>
+    </ul>
+</div>
+
+<script>
+    // 数据源
+    const effortRatios = [
+        { name: "凌亮正", ratio: 512.5 }, { name: "刘冰", ratio: 116.7 }, { name: "包鹏飞", ratio: 140.7 },
+        { name: "吴一凡", ratio: 54.9 }, { name: "周宇希", ratio: 173.5 }, { name: "夏佳兴", ratio: 139.0 },
+        { name: "宁波", ratio: 228.8 }, { name: "庞林", ratio: 100.0 }, { name: "张梦娟", ratio: 333.3 },
+        { name: "易锋华", ratio: 101.6 }, { name: "曾志翔", ratio: 145.5 }, { name: "朱叶贤", ratio: 168.8 },
+        { name: "李楠", ratio: 145.5 }, { name: "杨惠影", ratio: 88.3 }, { name: "林群", ratio: 125.0 },
+        { name: "樊韬", ratio: 98.7 }, { name: "洪伟强", ratio: 88.9 }, { name: "缪捷丞", ratio: 97.5 },
+        { name: "詹婉晶", ratio: 95.1 }, { name: "邹文杰", ratio: 121.9 }, { name: "钟义勇", ratio: 120.0 },
+        { name: "陆雯艳", ratio: 74.0 }, { name: "陈亮", ratio: 1425.0 }, { name: "陈彬", ratio: 228.0 },
+        { name: "陈楷枫", ratio: 120.2 }, { name: "陈莉莉", ratio: 107.9 }, { name: "陈跃", ratio: 87.8 },
+        { name: "黄永富", ratio: 123.9 }, { name: "黄金潮", ratio: 107.3 }, { name: "龚俊", ratio: 101.8 }
+    ].sort((a, b) => b.ratio - a.ratio);
+
+    const codeOutput = [
+        { name: "凌亮正", lines: 144786 }, { name: "包鹏飞", lines: 13207 }, { name: "周宇希", lines: 48182 },
+        { name: "张梦娟", lines: 133351 }, { name: "陈亮", lines: 119601 }, { name: "黄金潮", lines: 58862 },
+        { name: "宁波", lines: 780 }, { name: "曾志翔", lines: 35543 }, { name: "朱叶贤", lines: 25470 },
+        { name: "陈彬", lines: 23357 }, { name: "陈楷枫", lines: 78827 }, { name: "李楠", lines: 5515 },
+        { name: "吴一凡", lines: 3586 }, { name: "邹文杰", lines: 5970 }, { name: "钟义勇", lines: 133 },
+        { name: "夏佳兴", lines: 26319 }, { name: "易锋华", lines: 5820 }, { name: "洪伟强", lines: 2561 },
+        { name: "林群", lines: 12375 }, { name: "詹婉晶", lines: 127743 }, { name: "缪捷丞", lines: 10361 },
+        { name: "樊韬", lines: 2742 }
+    ].sort((a, b) => b.lines - a.lines);
+
+    const bugDistribution = [
+        { name: "包鹏飞", bugs: 70, fixed: 37 }, { name: "周宇希", bugs: 50, fixed: 55 },
+        { name: "陈楷枫", bugs: 43, fixed: 42 }, { name: "陈亮", bugs: 36, fixed: 31 },
+        { name: "张梦娟", bugs: 30, fixed: 28 }, { name: "李楠", bugs: 23, fixed: 49 },
+        { name: "吴一凡", bugs: 22, fixed: 27 }, { name: "朱叶贤", bugs: 21, fixed: 32 },
+        { name: "詹婉晶", bugs: 18, fixed: 17 }, { name: "庞林", bugs: 16, fixed: 21 },
+        { name: "缪捷丞", bugs: 15, fixed: 16 }, { name: "陈彬", bugs: 12, fixed: 15 },
+        { name: "曾志翔", bugs: 12, fixed: 21 }, { name: "黄金潮", bugs: 10, fixed: 14 },
+        { name: "宁波", bugs: 8, fixed: 9 }, { name: "易锋华", bugs: 6 }, { name: "凌亮正", bugs: 5, fixed: 6 },
+        { name: "刘冰", bugs: 5, fixed: 6 }, { name: "邹文杰", bugs: 3, fixed: 3 },
+        { name: "夏佳兴", bugs: 3, fixed: 5 }, { name: "杨惠影", bugs: 1, fixed: 1 },
+        { name: "原杨帆", bugs: 1 }, { name: "陈莉莉", bugs: 1, fixed: 1 },
+        { name: "钟义勇", bugs: 1, fixed: 1 }
+    ].sort((a, b) => b.bugs - a.bugs);
+
+    const bugFixRates = [
+        { name: "周宇希", rate: 110.0 }, { name: "李楠", rate: 213.0 }, { name: "陈楷枫", rate: 97.7 },
+        { name: "陈亮", rate: 86.1 }, { name: "张梦娟", rate: 93.3 }, { name: "吴一凡", rate: 122.7 },
+        { name: "朱叶贤", rate: 152.4 }, { name: "詹婉晶", rate: 94.4 }, { name: "庞林", rate: 131.3 },
+        { name: "缪捷丞", rate: 106.7 }, { name: "陈彬", rate: 125.0 }, { name: "曾志翔", rate: 175.0 },
+        { name: "黄金潮", rate: 140.0 }, { name: "宁波", rate: 112.5 }, { name: "凌亮正", rate: 120.0 },
+        { name: "刘冰", rate: 120.0 }, { name: "邹文杰", rate: 100.0 }, { name: "夏佳兴", rate: 166.7 },
+        { name: "杨惠影", rate: 100.0 }, { name: "陈莉莉", rate: 100.0 }, { name: "钟义勇", rate: 100.0 }
+    ].sort((a, b) => b.rate - a.rate);
+
+    const teamPerformance = [
+        { department: "研发一部", bugRate: 0.6, commitsPerPerson: 158.2 },
+        { department: "研发二部", bugRate: 1.2, commitsPerPerson: 145.3 }
+    ];
+
+    const teamEfficiency = [
+        { department: "研发一部", hoursPerPerson: 83.3, linesPerPerson: 35090.2 },
+        { department: "研发二部", hoursPerPerson: 84.5, linesPerPerson: 36132.5 }
+    ];
+
+    // 图表绘制
+    const effortRatioCtx = document.getElementById('effort-ratio-chart').getContext('2d');
+    new Chart(effortRatioCtx, {
+        type: 'bar',
+        data: {
+            labels: effortRatios.map(item => item.name),
+            datasets: [{
+                label: '工时投入比 (%)',
+                data: effortRatios.map(item => item.ratio),
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: Math.ceil(Math.max(...effortRatios.map(item => item.ratio)) * 1.1)
+                }
+            }
+        }
+    });
+
+    const codeOutputCtx = document.getElementById('code-output-chart').getContext('2d');
+    new Chart(codeOutputCtx, {
+        type: 'pie',
+        data: {
+            labels: codeOutput.map(item => item.name),
+            datasets: [{
+                label: '代码产出分布',
+                data: codeOutput.map(item => item.lines),
+                backgroundColor: Array(codeOutput.length).fill().map(() => `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.6)`),
+                borderColor: Array(codeOutput.length).fill().map(() => `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`),
+                borderWidth: 1
+            }]
+        }
+    });
+
+    const normalDistributionCtx = document.getElementById('normal-distribution-chart').getContext('2d');
+    const mean = effortRatios.reduce((sum, item) => sum + item.ratio, 0) / effortRatios.length;
+    const stdDev = Math.sqrt(effortRatios.reduce((sum, item) => sum + Math.pow(item.ratio - mean, 2), 0) / effortRatios.length);
+    new Chart(normalDistributionCtx, {
+        type: 'scatter',
+        data: {
+            datasets: [
+                {
+                    label: '理论正态分布',
+                    data: Array.from({ length: 100 }, (_, i) => ({
+                        x: mean - 4 * stdDev + (i / 100) * 8 * stdDev,
+                        y: (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((mean - 4 * stdDev + (i / 100) * 8 * stdDev - mean) / stdDev, 2))
+                    })),
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    showLine: true,
+                    fill: false
+                },
+                {
+                    label: '实际数据点',
+                    data: effortRatios.map(item => ({ x: item.ratio, y: 0 })),
+                    backgroundColor: effortRatios.map(item => Math.abs(item.ratio - mean) > 2 * stdDev ? 'red' : 'blue'),
+                    pointRadius: 5
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: { beginAtZero: false },
+                y: { beginAtZero: false }
+            }
+        }
+    });
+
+    const bugDistributionCtx = document.getElementById('bug-distribution-chart').getContext('2d');
+    new Chart(bugDistributionCtx, {
+        type: 'bar',
+        data: {
+            labels: bugDistribution.map(item => item.name),
+            datasets: [
+                {
+                    label: '产生Bug数',
+                    data: bugDistribution.map(item => item.bugs),
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: '修复Bug数',
+                    data: bugDistribution.map(item => item.fixed || 0),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: Math.ceil(Math.max(...bugDistribution.map(item => Math.max(item.bugs, item.fixed || 0))) * 1.1)
+                }
+            }
+        }
+    });
+
+    const bugFixRateCtx = document.getElementById('bug-fix-rate-chart').getContext('2d');
+    new Chart(bugFixRateCtx, {
+        type: 'bar',
+        data: {
+            labels: bugFixRates.map(item => item.name),
+            datasets: [{
+                label: '修复率 (%)',
+                data: bugFixRates.map(item => item.rate),
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: Math.ceil(Math.max(...bugFixRates.map(item => item.rate)) * 1.1)
+                }
+            }
+        }
+    });
+
+    const teamPerformanceCtx = document.getElementById('team-performance-chart').getContext('2d');
+    new Chart(teamPerformanceCtx, {
+        type: 'line',
+        data: {
+            labels: teamPerformance.map(item => item.department),
+            datasets: [
+                {
+                    label: '平均Bug率 (%)',
+                    data: teamPerformance.map(item => item.bugRate),
+                    borderColor: 'blue',
+                    backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                    yAxisID: 'y1',
+                    pointStyle: 'circle'
+                },
+                {
+                    label: '人均提交数',
+                    data: teamPerformance.map(item => item.commitsPerPerson),
+                    borderColor: 'orange',
+                    backgroundColor: 'rgba(255, 165, 0, 0.2)',
+                    yAxisID: 'y2',
+                    pointStyle: 'triangle'
+                }
+            ]
+        },
+        options: {
+            scales: {
+                y1: { position: 'left', title: { display: true, text: '平均Bug率 (%)' } },
+                y2: { position: 'right', title: { display: true, text: '人均提交数' } }
+            }
+        }
+    });
+
+    const teamEfficiencyCtx = document.getElementById('team-efficiency-chart').getContext('2d');
+    new Chart(teamEfficiencyCtx, {
+        type: 'line',
+        data: {
+            labels: teamEfficiency.map(item => item.department),
+            datasets: [
+                {
+                    label: '人均工时 (h)',
+                    data: teamEfficiency.map(item => item.hoursPerPerson),
+                    borderColor: 'green',
+                    backgroundColor: 'rgba(0, 128, 0, 0.2)',
+                    yAxisID: 'y1',
+                    pointStyle: 'rect'
+                },
+                {
+                    label: '人均变更行数',
+                    data: teamEfficiency.map(item => item.linesPerPerson),
+                    borderColor: 'red',
+                    backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                    yAxisID: 'y2',
+                    pointStyle: 'diamond'
+                }
+            ]
+        },
+        options: {
+            scales: {
+                y1: { position: 'left', title: { display: true, text: '人均工时 (h)' } },
+                y2: { position: 'right', title: { display: true, text: '人均变更行数' } }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
+```
